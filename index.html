@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Zilla+Slab:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+        rel="stylesheet">
+</head>
+
+
+
+<body style="background-image: url('https://i.pinimg.com/originals/ac/54/a1/ac54a128942c750799c2c1fe144d2467.jpg'); background-size: cover;">
+    <div class="container" style="font-family: Dancing Script;">
+        <div class="row justify-content-center">
+            <div class="p-3 mt-5 col-xs-12 col-sm-6 col-md-4"
+                style="border: 2px solid rgb(199, 199, 199); border-radius: 25px;">
+                <div class="mb-3">
+                    <H1 class="text-center">TO-DO LIST</H1>
+                    <div class="input d-flex col-xs-12 col-sm-6 col-md-12">
+                        <input type="text" class="form-control me-2" id="sno" style="width: 110px;"
+                            placeholder="Enter Sl no">
+                        <input type="text" class="form-control" id="task" placeholder="Enter Task To-Do">
+                    </div>
+                    <div class="text-center mt-3">
+                        <button type="button" onclick="addTask()"
+                            class="btn btn-dark">Add Task</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container col-xs-12 col-sm-6 col-md-8">
+            <table style="font-family: Zilla Slab; display: none;" id="theader"
+                class="table table-responsive-sm mt-5 ms-2 me-5 bg-light">
+                <thead>
+                    <tr>
+                        <th>Sl no</th>
+                        <th>Tasks To Do</th>
+                        <th>Mark as Done</th>
+                        <th>Status</th>
+                        <th>#</th>
+                    </tr>
+                </thead>
+                <tbody id="result">
+
+                </tbody>
+            </table>
+        </div>
+
+</body>
+<script>
+    tlist = []
+    localStorage.setItem('tasks', JSON.stringify(tlist))
+    function addTask() {
+    tasks = {
+        sno: sno.value,
+        name: task.value,
+        status: 'Pending' 
+    }
+    if (tasks.sno == '' || tasks.name == '') {
+        alert('Enter Valid details')
+    } else {
+        list=JSON.parse(localStorage.getItem('tasks'))
+        list.push(tasks)
+        localStorage.setItem('tasks', JSON.stringify(list))
+        sno.value = ''
+        task.value = ''
+        genT()
+    }
+}
+
+    function genT() {
+        result.innerHTML = "";
+        b = JSON.parse(localStorage.getItem('tasks'))
+        console.log(b);
+        theader.style.display = "table"
+        b.forEach(n => {
+            htmlData = `
+        <tr>
+                    <td>${n.sno}</td>
+                    <td>${n.name}</td>
+                    <td>
+                        <button class="btn btn-light border" onclick="status(${n.sno})">Done</button>
+                    </td>
+                    <td id="status">${n.status}</td>
+                    <td>
+                        <button class="btn btn-link" onclick="deleteTask(${n.sno})">Delete</button>
+                    </td>
+                </tr>
+        `
+            result.innerHTML += htmlData
+        });
+    }
+
+
+    function deleteTask(s) {
+        no = s
+        b = JSON.parse(localStorage.getItem('tasks'))
+        index = b.findIndex(n => n.sno == no)
+        if (index !== -1) {
+            b.splice(index, 1);
+            localStorage.setItem('tasks', JSON.stringify(b));
+            result.innerHTML = "";
+            genT();
+        }
+    }
+
+    function status(num){
+        index = num
+        b = JSON.parse(localStorage.getItem('tasks'))
+        value=b.findIndex(n => n.sno == index)
+        if (value !== -1) {
+            b[value].status = 'Completed';
+            localStorage.setItem('tasks', JSON.stringify(b));
+            genT();
+        }
+    }
+</script>
+
+</html>
